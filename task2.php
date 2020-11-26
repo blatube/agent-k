@@ -53,9 +53,21 @@ $orders = [
 ];
 
 function createReport(array $orders):array {
-    $lines = array();
+    $lines = [];
 
-    /** @todo ПИШИТЕ ВАШ КОД ЗДЕСЬ*/
+    foreach ($orders as $k => $order) {
+        $countTicketsChunks = [];
+
+        foreach ($order['tickets'] as $tickets) {
+            $countTicketsChunks[$tickets['price']] = isset($countTicketsChunks[$tickets['price']])
+                ? ++$countTicketsChunks[$tickets['price']]
+                : 1;
+        }
+
+        foreach ($countTicketsChunks as $key => $item) {
+            $lines[] = ['orderId' => $order['id'], 'count' => $item, 'sum' => $key * $item ];
+        }
+    }
 
     return $lines;
 }
