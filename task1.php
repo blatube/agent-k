@@ -24,7 +24,26 @@ $expression2 = '5-5'; // 0
 $expression3 = '10+6-12'; // 4
 
 function calculate(string $expression):int {
-    /** @todo ПИШИТЕ ВАШ КОД ЗДЕСЬ*/
+    $negativeNumbers = [];
+    $positiveNumbers = [];
+    $isFirstNumberNegative = $expression[0] === '-';
+
+    $dividedMinusArray = explode('-', $expression);
+    $oneItemOneNumberArray = array_map(function ($item) {
+        return explode('+', $item);
+    }, $dividedMinusArray);
+
+    foreach ($oneItemOneNumberArray as $key => $number) {
+
+        if ($key !== 0 || $isFirstNumberNegative) {
+            $negativeNumbers[] = $number[0];
+            unset($oneItemOneNumberArray[$key][0]);
+        }
+
+        $positiveNumbers[] = array_sum($oneItemOneNumberArray[$key]);
+    }
+
+    return array_sum($positiveNumbers) - array_sum($negativeNumbers);
 }
 
 echo calculate($expression1);
