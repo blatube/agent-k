@@ -13,11 +13,16 @@
 
 class Action
 {
+    // Вынести в константу
     public static function getServiceFeeRate()
     {
         return 0.01;
     }
 
+    /**
+     * Исходя из имнеи метода, ожидаю получить строку, получаю массив
+     * Если переименовать в getUrlChunks/Parts будет более читабельно
+     */
     public function getUrl() {
         return ['example.com', 'action', 'novogodnyaya_elka', '#' => 'description'];
     }
@@ -25,16 +30,22 @@ class Action
 
 class Event extends Action
 {
+    // Порядок объявления: public, protected, private; static имеет более высокий приоритет
     private $id;
     private $price;
+    // Сделать приватным
     public $sectors;
+
 
     public function getUrl()
     {
         $urlParts = ['id' => $this->id];
-
+        // Если только так используем родительский метод, то лучше его вынести из функции
         $urlParts = parent::getUrl() + $urlParts;
-
+        /**
+         * Думаю от этого стоит избавиться
+         * https://sun9-11.userapi.com/impf/c628030/v628030366/ff6b/9z9DxeOnxok.jpg?size=604x433&quality=96&proxy=1&sign=900b21fe1f602aaa1671298bbc7879a8
+         */
         if (isset($urlParts['#']))  {
             $sharp = $urlParts['#'];
             unset($urlParts['#']);
@@ -44,15 +55,21 @@ class Event extends Action
         return $urlParts;
     }
 
+    // Перенести после объявления полей
     public function __construct(int $id, float $price)
     {
         $this->id = $id;
         $this->price = $price;
     }
 
+    // Страдает семантика. Если пишем фильтр, то должны вернуть копию
     public static function filterActiveSectors(&$sectors)
     {
         foreach ($sectors as $key => &$sector) {
+            /**
+             *  приходит массив, а не объект
+             *  использовать полный синтаксис if (...) {..}
+            */
             if (!$sector->active)
                 unset($sectors[$key]);
         }
@@ -75,7 +92,9 @@ class Event extends Action
 }
 
 $event = new Event(1, 100.18);
+// Ошибка в составлении массва
 $event->setSectors([1 => ['name' => 'Партер', 'quantity' => 200, 'active' => true], [2 => ['name' => 'Балкон', 'quantity' => 100, , 'active' => false]]]);
+// $event->getSectors() назначить переменной
 $sectors = Event::filterActiveSectors($event->getSectors());
 
 var_dump($sectors);
