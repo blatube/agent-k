@@ -31,9 +31,12 @@
  *
  *
  * Описание алгоритма:
- ***** Вкратце, опишите свой план здесь ****
  *
- * ЗАТРАЧЕНО: в конце работы, опишите сколько потребовалось времени.
+ * Добавим два массива
+ * в 1ом в качестве ключей будем исопльзовать цену билета, и инкреминировать значение, если такой ключ есть
+ * 2ой приведем к финальному выводу
+ *
+ * ЗАТРАЧЕНО: ~25 минут
  */
 
 $orders = [
@@ -50,9 +53,21 @@ $orders = [
 ];
 
 function createReport(array $orders):array {
-    $lines = array();
+    $lines = [];
 
-    /** @todo ПИШИТЕ ВАШ КОД ЗДЕСЬ*/
+    foreach ($orders as $k => $order) {
+        $countTicketsChunks = [];
+
+        foreach ($order['tickets'] as $tickets) {
+            $countTicketsChunks[$tickets['price']] = isset($countTicketsChunks[$tickets['price']])
+                ? ++$countTicketsChunks[$tickets['price']]
+                : 1;
+        }
+
+        foreach ($countTicketsChunks as $key => $item) {
+            $lines[] = ['orderId' => $order['id'], 'count' => $item, 'sum' => $key * $item ];
+        }
+    }
 
     return $lines;
 }
